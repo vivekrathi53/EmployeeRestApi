@@ -81,4 +81,16 @@ public class restAPIController {
 		return user;
 	}
 	
+	@PostMapping("/api/logout")
+	public String logoutUser(@RequestBody Map<String,String> request)
+	{
+		Session session = sessionRepository.findAllBySessionId(request.get("sessionId"));
+		if(session==null)
+			return "Invalid sessionId";
+		else
+		{
+			sessionRepository.deleteByUsername(session.getUsername());
+			return "Logout Successfull";
+		}
+	}
 }
