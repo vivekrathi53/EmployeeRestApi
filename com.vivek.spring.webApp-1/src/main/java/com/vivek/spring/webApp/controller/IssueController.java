@@ -1,4 +1,4 @@
-package com.vivek.spring.webApp;
+package com.vivek.spring.webApp.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.vivek.spring.webApp.IssueReport;
 import com.vivek.spring.webApp.repositories.IssueRepository;
 
 @Controller
