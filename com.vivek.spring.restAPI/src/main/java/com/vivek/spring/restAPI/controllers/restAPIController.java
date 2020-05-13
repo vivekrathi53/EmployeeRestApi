@@ -76,7 +76,7 @@ public class restAPIController {
 		//System.out.println(request.toString() + " " + (System.currentTimeMillis()-session.getStartTime().getTime())/(1000*60));
 		if(session==null||((((System.currentTimeMillis()-session.getStartTime().getTime())/(1000*60))>30)))
 			return null;
-		User user =  userRepository.findAllByUsername(request.get("username"));
+		User user =  userRepository.findAllByUsername(session.getUsername());
 		//System.out.println(user);
 		return user;
 	}
