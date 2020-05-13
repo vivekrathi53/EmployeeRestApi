@@ -4,6 +4,7 @@ import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.util.Random;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -40,6 +41,7 @@ public class Session {
 		this.username = username;
 	}
 	private Timestamp startTime;
+	@Column(unique=true)
 	private String username;
 	public Session()
 	{

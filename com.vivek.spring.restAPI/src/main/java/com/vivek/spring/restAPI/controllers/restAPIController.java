@@ -3,8 +3,13 @@ package com.vivek.spring.restAPI.controllers;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +19,7 @@ import com.vivek.spring.restAPI.Entities.Session;
 import com.vivek.spring.restAPI.Entities.User;
 import com.vivek.spring.restAPI.Repositories.SessionRepository;
 import com.vivek.spring.restAPI.Repositories.UserRepository;
+
 
 @RestController
 public class restAPIController {
@@ -41,16 +47,15 @@ public class restAPIController {
 		User user = userRepository.findAllByUsername(data.get("username"));
 		if(user==null||(!user.getPassword().equals(data.get("password"))))
 			return null;
-		sessionRepository.deleteAllByUsername(data.get("username"));
+		sessionRepository.deleteByUsername(data.get("username"));
 		Session session = new Session(data.get("username"));
-		byte[] array = new byte[7]; // length is bounded by 7
 	    Random randomGenerator = new Random();
 	    
 	    
 		while(true)
 		{
-			randomGenerator.nextBytes(array);
-			String generatedString = new String(array, Charset.forName("UTF-8"));
+			String generatedString=Integer.toString(1000000+randomGenerator.nextInt()%1000000);
+			System.out.println(generatedString);
 			Session existingSession =sessionRepository.findAllBySessionId(generatedString);
 			if(existingSession==null)
 			{
@@ -62,4 +67,18 @@ public class restAPIController {
 		
 		return session.getSessionId();
 	}
+	
+	@PostMapping("/api/user")
+	public User getUserDetails(@RequestBody Map<String,String> request)
+	{
+		
+		Session session = sessionRepository.findAllBySessionId(request.get("sessionId"));
+		//System.out.println(request.toString() + " " + (System.currentTimeMillis()-session.getStartTime().getTime())/(1000*60));
+		if(session==null||((((System.currentTimeMillis()-session.getStartTime().getTime())/(1000*60))>30)))
+			return null;
+		User user =  userRepository.findAllByUsername(request.get("username"));
+		//System.out.println(user);
+		return user;
+	}
+	
 }
