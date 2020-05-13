@@ -93,4 +93,18 @@ public class restAPIController {
 			return "Logout Successfull";
 		}
 	}
+	
+	@PostMapping("/api/updateContact")
+	public String updateContact(@RequestBody Map<String,String> request)
+	{
+		Session session = sessionRepository.findAllBySessionId(request.get("sessionId"));
+		if(session==null||((((System.currentTimeMillis()-session.getStartTime().getTime())/(1000*60))>30)))
+			return "Invalid sessionId";
+		else
+		{
+			userRepository.updateContact(request.get("contact"),session.getUsername());
+			return "Update successfull";
+			
+		}
+	}
 }
