@@ -1,8 +1,8 @@
 package com.vivek.spring.restAPI.service;
 
-import com.vivek.spring.restAPI.Entities.Session;
-import com.vivek.spring.restAPI.Entities.SessionLog;
-import com.vivek.spring.restAPI.Repositories.SessionLogRepository;
+import com.vivek.spring.restAPI.entities.Session;
+import com.vivek.spring.restAPI.entities.SessionLog;
+import com.vivek.spring.restAPI.repositories.SessionLogRepository;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;

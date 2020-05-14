@@ -1,4 +1,4 @@
-package com.vivek.spring.restAPI.Entities;
+package com.vivek.spring.restAPI.entities;
 
 import javax.persistence.*;
 import java.sql.Timestamp;

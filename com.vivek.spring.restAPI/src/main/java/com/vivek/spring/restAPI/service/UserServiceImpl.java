@@ -1,12 +1,9 @@
 package com.vivek.spring.restAPI.service;
 
-import com.vivek.spring.restAPI.Entities.Session;
-import com.vivek.spring.restAPI.Entities.User;
-import com.vivek.spring.restAPI.Repositories.UserRepository;
+import com.vivek.spring.restAPI.entities.User;
+import com.vivek.spring.restAPI.repositories.UserRepository;
 import com.vivek.spring.restAPI.Responses.SessionDetails;
 import org.springframework.stereotype.Service;
-
-import java.util.Random;
 
 @Service
 public class UserServiceImpl implements UserService

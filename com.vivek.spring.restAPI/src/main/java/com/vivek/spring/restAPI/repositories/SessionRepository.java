@@ -1,4 +1,4 @@
-package com.vivek.spring.restAPI.Repositories;
+package com.vivek.spring.restAPI.repositories;
 
 import javax.transaction.Transactional;
 
@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.vivek.spring.restAPI.Entities.Session;
+import com.vivek.spring.restAPI.entities.Session;
 
 public interface SessionRepository extends JpaRepository<Session, String>
 {

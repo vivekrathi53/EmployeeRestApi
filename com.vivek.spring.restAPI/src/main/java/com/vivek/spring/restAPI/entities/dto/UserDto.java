@@ -1,4 +1,4 @@
-package com.vivek.spring.restAPI.Entities.Dto;
+package com.vivek.spring.restAPI.entities.dto;
 
 import lombok.Data;
 

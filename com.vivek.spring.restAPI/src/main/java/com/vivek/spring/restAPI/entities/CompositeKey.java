@@ -1,7 +1,5 @@
-package com.vivek.spring.restAPI.Entities;
+package com.vivek.spring.restAPI.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
 import java.io.Serializable;
 import java.sql.Timestamp;
 

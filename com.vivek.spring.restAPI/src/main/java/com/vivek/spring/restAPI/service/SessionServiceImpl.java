@@ -1,8 +1,8 @@
 package com.vivek.spring.restAPI.service;
 
-import com.vivek.spring.restAPI.Entities.LoginStatus;
-import com.vivek.spring.restAPI.Entities.Session;
-import com.vivek.spring.restAPI.Repositories.SessionRepository;
+import com.vivek.spring.restAPI.entities.LoginStatus;
+import com.vivek.spring.restAPI.entities.Session;
+import com.vivek.spring.restAPI.repositories.SessionRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;

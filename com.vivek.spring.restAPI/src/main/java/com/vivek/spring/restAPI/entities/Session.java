@@ -1,8 +1,7 @@
-package com.vivek.spring.restAPI.Entities;
+package com.vivek.spring.restAPI.entities;
 
 import java.sql.Timestamp;
 
-import javax.annotation.Generated;
 import javax.persistence.*;
 
 import lombok.Data;

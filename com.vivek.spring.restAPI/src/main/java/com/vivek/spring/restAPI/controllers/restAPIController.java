@@ -3,8 +3,8 @@ package com.vivek.spring.restAPI.controllers;
 import java.sql.Timestamp;
 import java.util.Map;
 
-import com.vivek.spring.restAPI.Entities.Dto.SessionDto;
-import com.vivek.spring.restAPI.Entities.Dto.UserDto;
+import com.vivek.spring.restAPI.entities.dto.SessionDto;
+import com.vivek.spring.restAPI.entities.dto.UserDto;
 import com.vivek.spring.restAPI.service.*;
 import com.vivek.spring.restAPI.service.SessionService;
 import com.vivek.spring.restAPI.service.UserService;
@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vivek.spring.restAPI.Entities.Session;
-import com.vivek.spring.restAPI.Entities.User;
+import com.vivek.spring.restAPI.entities.Session;
+import com.vivek.spring.restAPI.entities.User;
 
 
 @RestController

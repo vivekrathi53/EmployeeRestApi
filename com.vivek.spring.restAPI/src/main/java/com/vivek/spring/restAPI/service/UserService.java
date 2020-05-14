@@ -1,6 +1,6 @@
 package com.vivek.spring.restAPI.service;
 
-import com.vivek.spring.restAPI.Entities.User;
+import com.vivek.spring.restAPI.entities.User;
 
 public interface UserService {
     public void registerUser(User user);
