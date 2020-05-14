@@ -1,110 +1,109 @@
 package com.vivek.spring.restAPI.controllers;
 
-import java.nio.charset.Charset;
-import java.util.List;
+import java.sql.Timestamp;
 import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
 
+import com.vivek.spring.restAPI.Entities.Dto.SessionDto;
+import com.vivek.spring.restAPI.Entities.Dto.UserDto;
+import com.vivek.spring.restAPI.service.*;
+import com.vivek.spring.restAPI.service.SessionService;
+import com.vivek.spring.restAPI.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vivek.spring.restAPI.Entities.Session;
 import com.vivek.spring.restAPI.Entities.User;
-import com.vivek.spring.restAPI.Repositories.SessionRepository;
-import com.vivek.spring.restAPI.Repositories.UserRepository;
 
 
 @RestController
 public class restAPIController {
-	
-	private UserRepository userRepository;
-	private SessionRepository sessionRepository;
-	
-	public restAPIController(UserRepository userRepository,SessionRepository sessionRepository)
-	{
-		this.userRepository=userRepository;
-		this.sessionRepository=sessionRepository;
+
+	@Autowired
+	private UserService userService;
+	@Autowired
+	private SessionService sessionService;
+	@Autowired
+	private SessionLogService sessionLogService;
+
+	public UserService getUserService() {
+		return userService;
 	}
 
-	
+	public void setUserService(UserService userService) {
+		this.userService = userService;
+	}
+
+	public SessionService getSessionService() {
+		return sessionService;
+	}
+
+	public void setSessionService(SessionService sessionService) {
+		this.sessionService = sessionService;
+	}
+
+	public restAPIController(UserService userService, SessionService sessionService) {
+		this.userService = userService;
+		this.sessionService = sessionService;
+	}
+
 	@PostMapping("/api/signup")
-	public User signUpUser(@RequestBody User user)
+	public ResponseEntity<Object> signUpUser(@RequestBody User user)
 	{
-		//System.out.println(user.toString());
-		return userRepository.save(user);
+		userService.registerUser(user);
+		return new ResponseEntity<>("New User Registration Successful",HttpStatus.OK);
 	}
 	
 	@PostMapping("/api/login")
-	public String loginUser(@RequestBody Map<String,String> data)
+	public ResponseEntity<Object> loginUser(@RequestBody Map<String,String> data)
 	{
-		User user = userRepository.findAllByUsername(data.get("username"));
-		if(user==null||(!user.getPassword().equals(data.get("password"))))
-			return null;
-		sessionRepository.deleteByUsername(data.get("username"));
-		Session session = new Session(data.get("username"));
-	    Random randomGenerator = new Random();
-	    
-	    
-		while(true)
-		{
-			String generatedString=Integer.toString(1000000+randomGenerator.nextInt()%1000000);
-			System.out.println(generatedString);
-			Session existingSession =sessionRepository.findAllBySessionId(generatedString);
-			if(existingSession==null)
-			{
-				session.setSessionId(generatedString);
-				sessionRepository.save(session);
-				break;
-			}
-		}
-		
-		return session.getSessionId();
+		if(!userService.authenticate(data.get("username"),data.get("password")))
+			return new ResponseEntity<>("Invalid Username or Password", HttpStatus.NOT_FOUND);
+		sessionLogService.saveSession(sessionService.getSessionByUsername(data.get("username")));
+		return new ResponseEntity<>(convertToDto(sessionService.getNewSession(data.get("username"))),HttpStatus.OK);
 	}
 	
 	@PostMapping("/api/user")
-	public User getUserDetails(@RequestBody Map<String,String> request)
+	public ResponseEntity<Object> getUserDetails(@RequestBody Map<String,String> request)
 	{
-		
-		Session session = sessionRepository.findAllBySessionId(request.get("sessionId"));
-		//System.out.println(request.toString() + " " + (System.currentTimeMillis()-session.getStartTime().getTime())/(1000*60));
-		if(session==null||((((System.currentTimeMillis()-session.getStartTime().getTime())/(1000*60))>30)))
-			return null;
-		User user =  userRepository.findAllByUsername(session.getUsername());
-		//System.out.println(user);
-		return user;
+		if(!sessionService.checkSessionId(request.get("sessionId")))
+			return new ResponseEntity<>("Invalid Session Id",HttpStatus.NOT_FOUND);
+		Session session = sessionService.getSession(request.get("sessionId"));
+
+		return new ResponseEntity<>(convertToDto(userService.getUserDetails(session.getUsername())),HttpStatus.OK);
 	}
 	
 	@PostMapping("/api/logout")
-	public String logoutUser(@RequestBody Map<String,String> request)
+	public ResponseEntity<Object> logoutUser(@RequestBody Map<String,String> request)
 	{
-		Session session = sessionRepository.findAllBySessionId(request.get("sessionId"));
-		if(session==null)
-			return "Invalid sessionId";
-		else
-		{
-			sessionRepository.deleteByUsername(session.getUsername());
-			return "Logout Successfull";
+		Session session = sessionService.getSession(request.get("sessionId"));
+		if(sessionService.logoutSession(request.get("sessionId"))){
+			sessionLogService.saveSession(session);
+			return new ResponseEntity<>("Logout Successful",HttpStatus.OK);
 		}
+		else
+			return new ResponseEntity<>("Logout Unsuccessful",HttpStatus.OK);
 	}
 	
 	@PostMapping("/api/updateContact")
-	public String updateContact(@RequestBody Map<String,String> request)
+	public ResponseEntity<Object> updateContact(@RequestBody Map<String,String> request)
 	{
-		Session session = sessionRepository.findAllBySessionId(request.get("sessionId"));
-		if(session==null||((((System.currentTimeMillis()-session.getStartTime().getTime())/(1000*60))>30)))
-			return "Invalid sessionId";
-		else
+		if(sessionService.checkSessionId(request.get("sessionId")))
 		{
-			userRepository.updateContact(request.get("contact"),session.getUsername());
-			return "Update successfull";
-			
+			return new ResponseEntity<>(userService.updateContact(sessionService.getSession(request.get("sessionId")).getUsername(),request.get("contact")),HttpStatus.OK);
 		}
+		else
+			return new ResponseEntity<>("Invalid Session ID", HttpStatus.OK);
+	}
+
+	private SessionDto convertToDto(Session session) {
+		return new SessionDto(session.getSessionId(),new Timestamp(session.getStartTime().getTime()+30*60*1000));
+	}
+
+	private UserDto convertToDto(User user) {
+		return new UserDto(user.getUsername(),user.getContact(),user.getName());
 	}
 }

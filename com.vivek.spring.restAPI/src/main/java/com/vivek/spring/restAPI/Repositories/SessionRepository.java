@@ -12,6 +12,7 @@ import com.vivek.spring.restAPI.Entities.Session;
 public interface SessionRepository extends JpaRepository<Session, String>
 {
 	public Session findAllBySessionId(String sessionId);
+	public Session findAllByUsername(String username);
 	@Transactional
 	@Modifying
 	@Query(value = "DELETE FROM sessions s where s.username = :username", nativeQuery =true)

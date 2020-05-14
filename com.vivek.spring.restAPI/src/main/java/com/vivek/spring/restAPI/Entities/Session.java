@@ -1,15 +1,9 @@
 package com.vivek.spring.restAPI.Entities;
 
-import java.nio.charset.Charset;
 import java.sql.Timestamp;
-import java.util.Random;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.annotation.Generated;
+import javax.persistence.*;
 
 import lombok.Data;
 
@@ -20,8 +14,34 @@ import lombok.Data;
 public class Session {
 	
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name="id")
+	private Long id;
+	@Column(name="sessionId")
 	private String sessionId;
-	
+	@Column(name="startTime")
+	private Timestamp startTime;
+	@Column(unique=true)
+	private String username;
+	@Column(name="loginStatus")
+	private LoginStatus loginStatus;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public LoginStatus getLoginStatus() {
+		return loginStatus;
+	}
+
+	public void setLoginStatus(LoginStatus loginStatus) {
+		this.loginStatus = loginStatus;
+	}
+
 	public String getSessionId() {
 		return sessionId;
 	}
@@ -40,9 +60,7 @@ public class Session {
 	public void setUsername(String username) {
 		this.username = username;
 	}
-	private Timestamp startTime;
-	@Column(unique=true)
-	private String username;
+
 	public Session()
 	{
 		
