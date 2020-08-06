@@ -2,7 +2,6 @@ package com.vivek.spring.restAPI.service;
 
 import com.vivek.spring.restAPI.entities.User;
 import com.vivek.spring.restAPI.repositories.UserRepository;
-import com.vivek.spring.restAPI.Responses.SessionDetails;
 import org.springframework.stereotype.Service;
 
 @Service
